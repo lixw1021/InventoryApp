@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Inventory App</string>
+    <string name="detail_name">Name :</string>
+    <string name="detail_quality">Quality :</string>
+    <string name="detail_price">Price : $</string>
+    <string name="detail_order">Order</string>
+</resources>

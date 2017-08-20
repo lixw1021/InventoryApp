@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/detail_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout style="@style/detail_linearLayout">
+
+            <TextView
+                style="@style/detail_text"
+                android:text="@string/detail_name" />
+
+            <EditText
+                android:id="@+id/detail_name_tv"
+                style="@style/detail_edit"
+                android:inputType="text" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/detail_linearLayout">
+
+            <TextView
+                style="@style/detail_text"
+                android:text="@string/detail_quality" />
+
+            <EditText
+                android:id="@+id/detail_quality_et"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal"
+                android:inputType="number"
+                tools:text="100" />
+
+            <ImageButton
+                android:id="@+id/detail_quality_add"
+                style="@style/detail_image_bt"
+                android:src="@drawable/ic_add_circle_outline_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/detail_quality_minus"
+                style="@style/detail_image_bt"
+                android:src="@drawable/ic_remove_circle_outline_black_24dp" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/detail_linearLayout">
+
+            <TextView
+                style="@style/detail_text"
+                android:text="@string/detail_price" />
+
+            <EditText
+                android:id="@+id/detail_price_et"
+                style="@style/detail_edit"
+                android:inputType="numberDecimal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/detail_order_bt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal"
+                android:text="@string/detail_order" />
+
+            <EditText
+                android:id="@+id/detail_phone_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableStart="@drawable/ic_phone_black_24dp"
+                android:inputType="phone" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/detail_delete_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/margin_horizontal"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:background="@color/colorRed"
+            android:src="@drawable/ic_delete_forever_white_24dp" />
+    </LinearLayout>
+</ScrollView>
