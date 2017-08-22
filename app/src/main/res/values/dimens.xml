@@ -4,6 +4,7 @@
     <dimen name="margin_vertical">10dp</dimen>
     <dimen name="detail_text_size">20sp</dimen>
     <dimen name="detail_image_bt_margin">50dp</dimen>
+    <dimen name="floating_margin">30dp</dimen>
 
 
 </resources>

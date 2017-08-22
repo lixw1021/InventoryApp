@@ -91,9 +91,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/margin_horizontal"
-            android:layout_marginTop="@dimen/margin_vertical"
-            android:background="@color/colorRed"
-            android:src="@drawable/ic_delete_forever_white_24dp" />
+            android:layout_marginEnd="@dimen/floating_margin"
+            android:layout_marginTop="@dimen/floating_margin"
+            android:src="@drawable/ic_delete_forever_black_24dp" />
     </LinearLayout>
 </ScrollView>
