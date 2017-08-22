@@ -10,7 +10,7 @@
         android:layout_height="match_parent" />
 
     <TextView
-        android:id="@+id/item_name"
+        android:id="@+id/item_name_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/item_image"
@@ -19,33 +19,60 @@
         tools:text="product name" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/price_layout"
         android:layout_toEndOf="@+id/item_image"
-        android:gravity="bottom"
-        android:layout_below="@+id/item_name">
+        android:gravity="bottom">
 
         <TextView
-            android:layout_marginStart="@dimen/margin_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:layout_marginStart="@dimen/margin_horizontal"
+            android:textSize="16sp"
             tools:text="Stocks: " />
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:textSize="20sp"
-            tools:text="10" />
-
-        <Button
-            android:id="@+id/item_sale_bt"
+            android:id="@+id/item_quality_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sale" />
+            android:layout_marginStart="30dp"
+            android:textSize="16sp"
+            tools:text="10" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/price_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/item_image"
+        android:gravity="bottom">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal"
+            android:textSize="16sp"
+            tools:text="Price: " />
+
+        <TextView
+            android:id="@+id/item_price_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:textSize="16sp"
+            tools:text="10" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/item_sale_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="Sale"/>
 
 </RelativeLayout>
