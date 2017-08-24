@@ -17,11 +17,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".DetailActivity"
+        <activity android:name=".EditActivity"
             android:parentActivityName=".MainActivity"
             android:label="Product Detail">
-
         </activity>
+
+        <provider
+            android:name=".data.ProductProvider"
+            android:authorities="com.xianwei.inventoryapp"
+            android:exported="false"/>
 
     </application>
 

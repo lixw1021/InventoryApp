@@ -90,6 +90,7 @@
             android:id="@+id/detail_delete_bt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/floating_margin"
             android:layout_marginTop="@dimen/floating_margin"
