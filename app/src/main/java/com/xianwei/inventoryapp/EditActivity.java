@@ -1,18 +1,25 @@
 package com.xianwei.inventoryapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import com.xianwei.inventoryapp.data.ProductContract.ProductEntry;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,19 +31,31 @@ import butterknife.OnClick;
 
 public class EditActivity extends AppCompatActivity {
     @BindView(R.id.detail_image_view)
-    ImageView image;
+    ImageView imageView;
     @BindView(R.id.detail_camera)
     ImageButton imageButton;
     @BindView(R.id.detail_name_tv)
-    EditText name;
+    EditText nameEditView;
     @BindView(R.id.detail_quality_et)
-    EditText quality;
+    EditText qualityEditView;
+    @BindView(R.id.detail_quality_add)
+    ImageButton qualityAddButton;
+    @BindView(R.id.detail_quality_minus)
+    ImageButton qualityMinusButton;
     @BindView(R.id.detail_price_et)
-    EditText price;
+    EditText priceEditView;
     @BindView(R.id.detail_phone_et)
-    EditText phone;
+    EditText phoneEditView;
+    @BindView(R.id.detail_order_bt)
+    Button orderButton;
 
     private static final int RESULT_LOAD_IMAGE = 1;
+
+    private String productName;
+    private Uri productImageUri;
+    private int productQuality;
+    private int productPrice;
+    private String supplierPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,34 +64,103 @@ public class EditActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    private void insert() {
+    private void saveData() {
+        productName = nameEditView.getText().toString().trim();
+        productQuality = Integer.parseInt(qualityEditView.getText().toString());
+        supplierPhone = phoneEditView.getText().toString();
+        if (priceEditView.getText().toString().length() != 0 ){
+            productPrice = Integer.parseInt(priceEditView.getText().toString());
+        } else {
+            productPrice = 0;
+        }
 
+        ContentValues values = new ContentValues();
+        if (productName.length() == 0) {
+            Toast.makeText(this, "Please add a product name", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (productImageUri != null) {
+            values.put(ProductEntry.COLUMN_PRODUCT_IMAGE_URI, productImageUri.toString());
+        }
+        if (supplierPhone != null) {
+            values.put(ProductEntry.COLUMN_SUPPLIER_PHONE, supplierPhone);
+
+        }
+        values.put(ProductEntry.COLUMN_PRODUCT_NAME, productName);
+        values.put(ProductEntry.COLUMN_PRODUCT_QUALITY, productQuality);
+        values.put(ProductEntry.COLUMN_PRODUCT_PRICE, productPrice);
+
+        getContentResolver().insert(ProductEntry.CONTENT_URI, values);
+        finish();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            Uri imageUri = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            Cursor cursor = getContentResolver().query(imageUri, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            String imagePath = cursor.getString(cursor.getColumnIndexOrThrow(filePathColumn[0]));
-            cursor.close();
-
-            image.setImageBitmap(BitmapFactory.decodeFile(imagePath));
+            productImageUri = data.getData();
+            Bitmap bitmap = getBitmapFromUri(productImageUri);
+            imageView.setImageBitmap(bitmap);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @OnClick(R.id.detail_camera)
-    public void getImageFromGallery () {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent,RESULT_LOAD_IMAGE);
+    private Bitmap getBitmapFromUri(Uri imageUri) {
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(imageUri, filePathColumn, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            String imagePath = cursor.getString(cursor.getColumnIndexOrThrow(filePathColumn[0]));
+            cursor.close();
+            return BitmapFactory.decodeFile(imagePath);
+        }
+        return null;
     }
+
+    @OnClick(R.id.detail_camera)
+    public void getImageFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, RESULT_LOAD_IMAGE);
+    }
+
+    @OnClick(R.id.detail_quality_add)
+    public void qualityAdd() {
+        int displayNumber = Integer.parseInt(qualityEditView.getText().toString());
+        if (displayNumber < Integer.MAX_VALUE){
+            qualityEditView.setText(String.valueOf(++displayNumber));
+        }
+    }
+
+    @OnClick(R.id.detail_quality_minus)
+    public void qualityMinus() {
+        int displayNumber = Integer.parseInt(qualityEditView.getText().toString());
+        if (displayNumber > 0) {
+            qualityEditView.setText(String.valueOf(--displayNumber));
+        }
+    }
+
+    @OnClick(R.id.detail_order_bt)
+    public void makeCall() {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        String phoneNumber = parsePhone(phoneEditView.getText().toString());
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        startActivity(intent);
+    }
+
+    private String parsePhone(String phoneString) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < phoneString.length(); i++) {
+            char phoneChar = phoneString.charAt(i);
+            if (phoneChar >= '0' && phoneChar <= '9' ) {
+                result.append(phoneChar);
+            }
+        }
+        return result.toString();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_editor,menu);
+        getMenuInflater().inflate(R.menu.menu_editor, menu);
         return true;
     }
 
@@ -80,7 +168,7 @@ public class EditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.edit_save:
-                insert();
+                saveData();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

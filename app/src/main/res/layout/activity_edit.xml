@@ -56,6 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal"
                 android:inputType="number"
+                android:text="0"
                 tools:text="100" />
 
             <ImageButton

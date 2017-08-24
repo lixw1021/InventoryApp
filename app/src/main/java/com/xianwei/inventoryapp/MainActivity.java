@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        insertTest();
+//        insertTest();
         readTest();
     }
 
@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         if (cursor == null) {
             Log.i("12345", "cursor = null");
         }
+        TextView tv = (TextView) findViewById(R.id.test);
+        tv.setText("id --- name --- image --- price --- quality --- phone");
         while (cursor.moveToNext()) {
             Long id = cursor.getLong(cursor.getColumnIndexOrThrow(ProductEntry._ID));
             String name = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_NAME));
@@ -51,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
             int price = cursor.getInt(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_PRICE));
             int quality = cursor.getInt(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_QUALITY));
             String phone = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_SUPPLIER_PHONE));
-
-            TextView tv = (TextView) findViewById(R.id.test);
-            tv.setText("id --- name --- image --- price --- quality --- phone");
             tv.append("\n" + "  " + id + "  " + name + "  " + image + "  " + price + "  " + quality + "  " + phone);
         }
 
