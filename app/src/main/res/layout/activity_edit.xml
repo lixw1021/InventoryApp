@@ -10,11 +10,27 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/detail_image_view"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:scaleType="centerCrop" />
+            android:background="@color/colorBackground">
+
+            <ImageView
+                android:id="@+id/detail_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+
+            <ImageButton
+                android:id="@+id/detail_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="@dimen/floating_margin"
+                android:src="@drawable/ic_photo_camera_black_24dp" />
+
+        </RelativeLayout>
 
         <LinearLayout style="@style/detail_linearLayout">
 
@@ -90,10 +106,10 @@
             android:id="@+id/detail_delete_bt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorWhite"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/floating_margin"
             android:layout_marginTop="@dimen/floating_margin"
+            android:background="@color/colorWhite"
             android:src="@drawable/ic_delete_forever_black_24dp" />
     </LinearLayout>
 </ScrollView>
