@@ -1,23 +1,33 @@
 package com.xianwei.inventoryapp;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.xianwei.inventoryapp.data.ProductContract.ProductEntry;
+import com.xianwei.inventoryapp.data.ProductDbHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 
 public class MainActivity extends AppCompatActivity {
+    @BindView(R.id.list_view)
+    ListView listView;
+    @BindView(R.id.empty_list_view)
+    View emptyView;
     @BindView(R.id.floating_add)
     FloatingActionButton fab;
 
@@ -27,48 +37,36 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-//        insertTest();
-        readTest();
-    }
 
-    private void readTest() {
-        String[] projection = { ProductEntry._ID,
-                                ProductEntry.COLUMN_PRODUCT_NAME,
-                                ProductEntry.COLUMN_PRODUCT_IMAGE_URI,
-                                ProductEntry.COLUMN_PRODUCT_PRICE,
-                                ProductEntry.COLUMN_PRODUCT_QUALITY,
-                                ProductEntry.COLUMN_SUPPLIER_PHONE};
-
+        listView.setEmptyView(emptyView);
+        String[] projection = new String[] {ProductEntry._ID,
+                                            ProductEntry.COLUMN_PRODUCT_NAME,
+                                            ProductEntry.COLUMN_PRODUCT_PRICE,
+                                            ProductEntry.COLUMN_PRODUCT_QUALITY};
 
         Cursor cursor = getContentResolver().query(ProductEntry.CONTENT_URI, projection, null, null, null);
-        if (cursor == null) {
-            Log.i("12345", "cursor = null");
-        }
-        TextView tv = (TextView) findViewById(R.id.test);
-        tv.setText("id --- name --- image --- price --- quality --- phone");
-        while (cursor.moveToNext()) {
-            Long id = cursor.getLong(cursor.getColumnIndexOrThrow(ProductEntry._ID));
-            String name = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_NAME));
-            String image = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_IMAGE_URI));
-            int price = cursor.getInt(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_PRICE));
-            int quality = cursor.getInt(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_QUALITY));
-            String phone = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_SUPPLIER_PHONE));
-            tv.append("\n" + "  " + id + "  " + name + "  " + image + "  " + price + "  " + quality + "  " + phone);
-        }
+        ProductCursorAdapter adapter = new ProductCursorAdapter(this, cursor);
+        listView.setAdapter(adapter);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, EditActivity.class);
+                Uri uri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, id);
+                intent.putExtra("URI",uri.toString());
+                startActivity(intent);
+            }
+        });
     }
 
-    private void insertTest() {
-        ContentValues values = new ContentValues();
-        values.put(ProductEntry.COLUMN_PRODUCT_NAME, "product name");
-        values.put(ProductEntry.COLUMN_PRODUCT_IMAGE_URI, "image uri");
-        values.put(ProductEntry.COLUMN_PRODUCT_PRICE, 10);
-        values.put(ProductEntry.COLUMN_PRODUCT_QUALITY, 100);
-        values.put(ProductEntry.COLUMN_SUPPLIER_PHONE, "4129990992");
-
-        Uri uri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
-        Log.i("database insert", uri.toString());
-    }
+//    @OnItemClick(R.id.list_view)
+//    void openEdit(long id) {
+//        c
+//        Intent intent = new Intent(MainActivity.this, EditActivity.class);
+//        Uri uri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, id);
+//        intent.putExtra("URI",uri.toString());
+//        startActivity(intent);
+//    }
 
     @OnClick(R.id.floating_add)
     public void addItem(View view) {

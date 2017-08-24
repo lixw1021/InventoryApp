@@ -2,52 +2,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
-
-    <ImageButton
-        android:id="@+id/item_image"
-        android:layout_width="80dp"
-        android:layout_height="match_parent" />
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/item_name_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/item_image"
-        android:gravity="center_horizontal"
+        android:layout_toStartOf="@+id/item_sale_bt"
+        android:gravity="center"
         android:textSize="20sp"
         tools:text="product name" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/price_layout"
-        android:layout_toEndOf="@+id/item_image"
-        android:gravity="bottom">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal"
-            android:textSize="16sp"
-            tools:text="Stocks: " />
-
-        <TextView
-            android:id="@+id/item_quality_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:textSize="16sp"
-            tools:text="10" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/price_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/item_image"
+        android:layout_below="@+id/item_name_tv"
         android:gravity="bottom">
 
         <TextView
@@ -55,13 +25,28 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal"
             android:textSize="16sp"
-            tools:text="Price: " />
+            android:text="Price: " />
 
         <TextView
             android:id="@+id/item_price_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="@dimen/margin_horizontal"
+            android:textSize="16sp"
+            tools:text="10" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/floating_margin"
+            android:textSize="16sp"
+            android:text="Stocks: " />
+
+        <TextView
+            android:id="@+id/item_quality_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal"
             android:textSize="16sp"
             tools:text="10" />
 
@@ -71,8 +56,8 @@
         android:id="@+id/item_sale_bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:text="Sale"/>
+        android:focusable="false"
+        android:text="Sale" />
 
 </RelativeLayout>

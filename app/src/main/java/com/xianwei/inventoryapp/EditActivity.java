@@ -104,7 +104,7 @@ public class EditActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private Bitmap getBitmapFromUri(Uri imageUri) {
+    public Bitmap getBitmapFromUri(Uri imageUri) {
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
         Cursor cursor = getContentResolver().query(imageUri, filePathColumn, null, null, null);
         if (cursor != null) {
