@@ -5,4 +5,5 @@
     <string name="detail_price">Price : $</string>
     <string name="detail_order">Order</string>
     <string name="ware_house_text">Your warehouse is empty !\nPlease add your products</string>
+    <string name="delete_menu">Delete All</string>
 </resources>
