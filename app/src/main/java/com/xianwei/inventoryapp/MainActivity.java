@@ -10,6 +10,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("123", "Main oncreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     void openEdit(long id) {
         Intent intent = new Intent(MainActivity.this, EditActivity.class);
         Uri uri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, id);
-        intent.putExtra("URI",uri.toString());
+        intent.putExtra("URI", uri.toString());
         startActivity(intent);
     }
 
@@ -79,7 +81,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = new String[] {ProductEntry._ID,
+        Log.i("123", "Main onCreateLoader");
+        String[] projection = new String[]{ProductEntry._ID,
                 ProductEntry.COLUMN_PRODUCT_NAME,
                 ProductEntry.COLUMN_PRODUCT_PRICE,
                 ProductEntry.COLUMN_PRODUCT_QUALITY};
@@ -89,11 +92,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor newCursor) {
+        Log.i("123", "Main onLoadFinished");
         cursorAdapter.swapCursor(newCursor);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        Log.i("123", "Main onLoaderReset");
         cursorAdapter.swapCursor(null);
     }
 }

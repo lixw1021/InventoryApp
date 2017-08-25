@@ -12,6 +12,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +32,7 @@ import butterknife.OnClick;
  * Created by xianwei li on 8/19/2017.
  */
 
-public class EditActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class EditActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     @BindView(R.id.detail_image_view)
     ImageView imageView;
     @BindView(R.id.detail_camera)
@@ -65,6 +66,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("123", "Edit onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         ButterKnife.bind(this);
@@ -115,7 +117,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         if (itemUri == null) {
             getContentResolver().insert(ProductEntry.CONTENT_URI, values);
         } else {
-            getContentResolver().update(itemUri,values, null, null);
+            getContentResolver().update(itemUri, values, null, null);
         }
         finish();
     }
@@ -151,9 +153,9 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     @OnClick(R.id.detail_quality_add)
     public void qualityAdd() {
         productQuality = qualityEditView.getText().toString();
-        if (productQuality.length() != 0){
+        if (productQuality.length() != 0) {
             int displayNumber = Integer.parseInt(productQuality);
-            if (displayNumber < Integer.MAX_VALUE){
+            if (displayNumber < Integer.MAX_VALUE) {
                 qualityEditView.setText(String.valueOf(++displayNumber));
             }
         }
@@ -188,7 +190,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < phoneString.length(); i++) {
             char phoneChar = phoneString.charAt(i);
-            if (phoneChar >= '0' && phoneChar <= '9' ) {
+            if (phoneChar >= '0' && phoneChar <= '9') {
                 result.append(phoneChar);
             }
         }
@@ -215,18 +217,20 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.i("123", "Edit onCreateLoader");
         String[] project = {ProductEntry.COLUMN_PRODUCT_IMAGE_URI,
-                            ProductEntry.COLUMN_PRODUCT_NAME,
-                            ProductEntry.COLUMN_PRODUCT_QUALITY,
-                            ProductEntry.COLUMN_PRODUCT_PRICE,
-                            ProductEntry.COLUMN_SUPPLIER_PHONE};
+                ProductEntry.COLUMN_PRODUCT_NAME,
+                ProductEntry.COLUMN_PRODUCT_QUALITY,
+                ProductEntry.COLUMN_PRODUCT_PRICE,
+                ProductEntry.COLUMN_SUPPLIER_PHONE};
 
         return new CursorLoader(this, itemUri, project, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        if (cursor != null) {
+        Log.i("123", "Edit onLoadFinished");
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             String imageUriString = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_IMAGE_URI));
             if (imageUriString != null) {
@@ -248,6 +252,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        Log.i("123", "Edit onLoaderReset");
         imageView.setImageBitmap(null);
         nameEditView.setText("");
         qualityEditView.setText("0");

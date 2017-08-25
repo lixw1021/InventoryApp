@@ -55,6 +55,7 @@ public class ProductProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Can't query unknown URI" + uri);
         }
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
@@ -72,27 +73,27 @@ public class ProductProvider extends ContentProvider {
 
     private Uri insertProduct(Uri uri, ContentValues values) {
         String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
-        if (name == null ) {
+        if (name == null) {
             throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
 
         String imageUri = values.getAsString(ProductEntry.COLUMN_PRODUCT_IMAGE_URI);
-        if (imageUri == null ) {
+        if (imageUri == null) {
             throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
 
         Integer quality = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUALITY);
-        if (quality == null || quality < 0 ) {
+        if (quality == null || quality < 0) {
             throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
 
         Integer price = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_PRICE);
-        if (price == null || price < 0 ) {
+        if (price == null || price < 0) {
             throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
 
         String phone = values.getAsString(ProductEntry.COLUMN_SUPPLIER_PHONE);
-        if (phone == null ) {
+        if (phone == null) {
             throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
 
@@ -101,6 +102,7 @@ public class ProductProvider extends ContentProvider {
         if (id == -1) {
             Log.e(LOG_TAG, "Failed to insert row for " + uri);
         }
+        getContext().getContentResolver().notifyChange(uri, null);
         return ContentUris.withAppendedId(uri, id);
     }
 
@@ -123,41 +125,44 @@ public class ProductProvider extends ContentProvider {
     private int updateProduct(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         if (values.containsKey(ProductEntry.COLUMN_PRODUCT_NAME)) {
             String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
-            if (name == null ) {
+            if (name == null) {
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
             }
         }
 
         if (values.containsKey(ProductEntry.COLUMN_PRODUCT_IMAGE_URI)) {
             String imageUri = values.getAsString(ProductEntry.COLUMN_PRODUCT_IMAGE_URI);
-            if (imageUri == null ) {
+            if (imageUri == null) {
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
             }
         }
 
         if (values.containsKey(ProductEntry.COLUMN_PRODUCT_QUALITY)) {
             Integer quality = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUALITY);
-            if (quality == null || quality < 0 ) {
+            if (quality == null || quality < 0) {
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
             }
         }
 
         if (values.containsKey(ProductEntry.COLUMN_PRODUCT_PRICE)) {
             Integer price = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_PRICE);
-            if (price == null || price < 0 ) {
+            if (price == null || price < 0) {
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
             }
         }
 
         if (values.containsKey(ProductEntry.COLUMN_SUPPLIER_PHONE)) {
             String phone = values.getAsString(ProductEntry.COLUMN_SUPPLIER_PHONE);
-            if (phone == null ) {
+            if (phone == null) {
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
             }
         }
 
         SQLiteDatabase db = productDbHelper.getWritableDatabase();
         int rowsUpdated = db.update(ProductEntry.TABLE_NAME, values, selection, selectionArgs);
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
         return rowsUpdated;
     }
 
@@ -180,12 +185,24 @@ public class ProductProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Deletion is not supported for" + uri);
         }
+
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
         return rowsDeleted;
     }
 
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+        final int match = uriMatcher.match(uri);
+        switch (match) {
+            case PRODUCT:
+                return ProductEntry.CONTENT_LIST_TYPE;
+            case PRODUCT_ID:
+                return ProductEntry.CONTENT_ITEM_TYPE;
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri + " with match " + match);
+        }
     }
 }
