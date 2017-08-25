@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_toStartOf="@+id/item_sale_bt"
         android:gravity="center"
-        android:textSize="20sp"
+        android:textSize="@dimen/item_title_size"
         tools:text="product name" />
 
     <LinearLayout
@@ -24,30 +24,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal"
-            android:textSize="16sp"
-            android:text="Price: " />
+            android:textSize="@dimen/item_subtitle_size"
+            android:text="@string/item_price" />
 
         <TextView
             android:id="@+id/item_price_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal"
-            android:textSize="16sp"
+            android:textSize="@dimen/item_subtitle_size"
             tools:text="10" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/floating_margin"
-            android:textSize="16sp"
-            android:text="Stocks: " />
+            android:textSize="@dimen/item_subtitle_size"
+            android:text="@string/item_stocks" />
 
         <TextView
             android:id="@+id/item_quality_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal"
-            android:textSize="16sp"
+            android:textSize="@dimen/item_subtitle_size"
             tools:text="10" />
 
     </LinearLayout>
@@ -58,6 +58,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:focusable="false"
-        android:text="Sale" />
+        android:text="@string/item_sale_bt" />
 
 </RelativeLayout>

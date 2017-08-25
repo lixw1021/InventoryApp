@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i("123", "Main oncreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -81,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.i("123", "Main onCreateLoader");
         String[] projection = new String[]{ProductEntry._ID,
                 ProductEntry.COLUMN_PRODUCT_NAME,
                 ProductEntry.COLUMN_PRODUCT_PRICE,
@@ -92,13 +90,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor newCursor) {
-        Log.i("123", "Main onLoadFinished");
         cursorAdapter.swapCursor(newCursor);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.i("123", "Main onLoaderReset");
         cursorAdapter.swapCursor(null);
     }
 }

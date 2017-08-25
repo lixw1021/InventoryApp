@@ -12,7 +12,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,7 +65,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i("123", "Edit onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         ButterKnife.bind(this);
@@ -75,8 +73,10 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         if (itemUriString != null) {
             itemUri = Uri.parse(itemUriString);
             getSupportLoaderManager().initLoader(EXITING_URL_LOADER, null, this);
+            getSupportActionBar().setTitle(R.string.edit_label);
         } else {
             deleteButton.setVisibility(View.GONE);
+            getSupportActionBar().setTitle(R.string.add_label);
         }
     }
 
@@ -197,7 +197,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         return result.toString();
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_editor, menu);
@@ -217,7 +216,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.i("123", "Edit onCreateLoader");
         String[] project = {ProductEntry.COLUMN_PRODUCT_IMAGE_URI,
                 ProductEntry.COLUMN_PRODUCT_NAME,
                 ProductEntry.COLUMN_PRODUCT_QUALITY,
@@ -229,7 +227,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.i("123", "Edit onLoadFinished");
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             String imageUriString = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_IMAGE_URI));
@@ -252,7 +249,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.i("123", "Edit onLoaderReset");
         imageView.setImageBitmap(null);
         nameEditView.setText("");
         qualityEditView.setText("0");
