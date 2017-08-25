@@ -82,27 +82,35 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         productName = nameEditView.getText().toString().trim();
         productQuality = qualityEditView.getText().toString();
         supplierPhone = phoneEditView.getText().toString();
-        if (priceEditView.getText().toString().length() != 0 ){
-            productPrice = priceEditView.getText().toString();
-        } else {
-            productPrice = "0";
-        }
+        productPrice = priceEditView.getText().toString();
 
-        ContentValues values = new ContentValues();
         if (productName.length() == 0) {
             Toast.makeText(this, "Please add a product name", Toast.LENGTH_LONG).show();
             return;
         }
-        if (productImageUri != null) {
-            values.put(ProductEntry.COLUMN_PRODUCT_IMAGE_URI, productImageUri.toString());
+        if (productImageUri == null) {
+            Toast.makeText(this, "Please add a product picture", Toast.LENGTH_LONG).show();
+            return;
         }
-        if (supplierPhone != null) {
-            values.put(ProductEntry.COLUMN_SUPPLIER_PHONE, supplierPhone);
+        if (productQuality.length() == 0 || Integer.parseInt(productQuality) < 0) {
+            Toast.makeText(this, "Please add a valid quality number", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (productPrice.length() == 0 || Integer.parseInt(productPrice) < 0) {
+            Toast.makeText(this, "Please add a valid price number", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (supplierPhone.length() == 0) {
+            Toast.makeText(this, "Please add a supplier phone number", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-        }
+        ContentValues values = new ContentValues();
+        values.put(ProductEntry.COLUMN_PRODUCT_IMAGE_URI, productImageUri.toString());
         values.put(ProductEntry.COLUMN_PRODUCT_NAME, productName);
         values.put(ProductEntry.COLUMN_PRODUCT_QUALITY, productQuality);
         values.put(ProductEntry.COLUMN_PRODUCT_PRICE, productPrice);
+        values.put(ProductEntry.COLUMN_SUPPLIER_PHONE, supplierPhone);
 
         if (itemUri == null) {
             getContentResolver().insert(ProductEntry.CONTENT_URI, values);
@@ -142,17 +150,23 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @OnClick(R.id.detail_quality_add)
     public void qualityAdd() {
-        int displayNumber = Integer.parseInt(qualityEditView.getText().toString());
-        if (displayNumber < Integer.MAX_VALUE){
-            qualityEditView.setText(String.valueOf(++displayNumber));
+        productQuality = qualityEditView.getText().toString();
+        if (productQuality.length() != 0){
+            int displayNumber = Integer.parseInt(productQuality);
+            if (displayNumber < Integer.MAX_VALUE){
+                qualityEditView.setText(String.valueOf(++displayNumber));
+            }
         }
     }
 
     @OnClick(R.id.detail_quality_minus)
     public void qualityMinus() {
-        int displayNumber = Integer.parseInt(qualityEditView.getText().toString());
-        if (displayNumber > 0) {
-            qualityEditView.setText(String.valueOf(--displayNumber));
+        productQuality = qualityEditView.getText().toString();
+        if (productQuality.length() != 0) {
+            int displayNumber = Integer.parseInt(qualityEditView.getText().toString());
+            if (displayNumber > 0) {
+                qualityEditView.setText(String.valueOf(--displayNumber));
+            }
         }
     }
 

@@ -19,6 +19,7 @@ import com.xianwei.inventoryapp.data.ProductContract.ProductEntry;
 
 public class ProductProvider extends ContentProvider {
 
+    public static final String LOG_TAG = ProductProvider.class.getSimpleName();
     private static final int PRODUCT = 100;
     private static final int PRODUCT_ID = 101;
     private ProductDbHelper productDbHelper;
@@ -42,7 +43,6 @@ public class ProductProvider extends ContentProvider {
         SQLiteDatabase db = productDbHelper.getReadableDatabase();
         Cursor cursor;
         int match = uriMatcher.match(uri);
-        Log.i("12345", String.valueOf(match));
         switch (match) {
             case PRODUCT:
                 cursor = db.query(ProductEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
@@ -71,19 +71,37 @@ public class ProductProvider extends ContentProvider {
     }
 
     private Uri insertProduct(Uri uri, ContentValues values) {
-//        String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
-//        if (name == null) {
-//            Toast.makeText(getContext(), "Please input a product name", Toast.LENGTH_LONG).show();
-//        }
-//        String imageUri = values.getAsString(ProductEntry.COLUMN_PRODUCT_IMAGE_URI);
-//        int quality = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUALITY);
-//        int price = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_PRICE);
-//        String phone = values.getAsString(ProductEntry.COLUMN_SUPPLIER_PHONE);
+        String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
+        if (name == null ) {
+            throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
+
+        String imageUri = values.getAsString(ProductEntry.COLUMN_PRODUCT_IMAGE_URI);
+        if (imageUri == null ) {
+            throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
+
+        Integer quality = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUALITY);
+        if (quality == null || quality < 0 ) {
+            throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
+
+        Integer price = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_PRICE);
+        if (price == null || price < 0 ) {
+            throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
+
+        String phone = values.getAsString(ProductEntry.COLUMN_SUPPLIER_PHONE);
+        if (phone == null ) {
+            throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
 
         SQLiteDatabase db = productDbHelper.getWritableDatabase();
         long id = db.insert(ProductEntry.TABLE_NAME, null, values);
-        Uri insertUri = ContentUris.withAppendedId(uri, id);
-        return insertUri;
+        if (id == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+        }
+        return ContentUris.withAppendedId(uri, id);
     }
 
 
@@ -103,11 +121,40 @@ public class ProductProvider extends ContentProvider {
     }
 
     private int updateProduct(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-//        String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
-//        String imageUri = values.getAsString(ProductEntry.COLUMN_PRODUCT_IMAGE_URI);
-//        int price = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_PRICE);
-//        int quality = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUALITY);
-//        String phone = values.getAsString(ProductEntry.COLUMN_SUPPLIER_PHONE);
+        if (values.containsKey(ProductEntry.COLUMN_PRODUCT_NAME)) {
+            String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
+            if (name == null ) {
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+            }
+        }
+
+        if (values.containsKey(ProductEntry.COLUMN_PRODUCT_IMAGE_URI)) {
+            String imageUri = values.getAsString(ProductEntry.COLUMN_PRODUCT_IMAGE_URI);
+            if (imageUri == null ) {
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+            }
+        }
+
+        if (values.containsKey(ProductEntry.COLUMN_PRODUCT_QUALITY)) {
+            Integer quality = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUALITY);
+            if (quality == null || quality < 0 ) {
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+            }
+        }
+
+        if (values.containsKey(ProductEntry.COLUMN_PRODUCT_PRICE)) {
+            Integer price = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_PRICE);
+            if (price == null || price < 0 ) {
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+            }
+        }
+
+        if (values.containsKey(ProductEntry.COLUMN_SUPPLIER_PHONE)) {
+            String phone = values.getAsString(ProductEntry.COLUMN_SUPPLIER_PHONE);
+            if (phone == null ) {
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+            }
+        }
 
         SQLiteDatabase db = productDbHelper.getWritableDatabase();
         int rowsUpdated = db.update(ProductEntry.TABLE_NAME, values, selection, selectionArgs);
