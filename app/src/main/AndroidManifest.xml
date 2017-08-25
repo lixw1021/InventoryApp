@@ -25,7 +25,8 @@
         <provider
             android:name=".data.ProductProvider"
             android:authorities="com.xianwei.inventoryapp"
-            android:exported="false"/>
+            android:exported="false"
+            android:grantUriPermissions="true"/>
 
     </application>
 

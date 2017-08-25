@@ -4,8 +4,6 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -128,27 +126,15 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             productImageUri = data.getData();
-            Bitmap bitmap = getBitmapFromUri(productImageUri);
-            imageView.setImageBitmap(bitmap);
+            imageView.setImageURI(productImageUri);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public Bitmap getBitmapFromUri(Uri imageUri) {
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(imageUri, filePathColumn, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            String imagePath = cursor.getString(cursor.getColumnIndexOrThrow(filePathColumn[0]));
-            cursor.close();
-            return BitmapFactory.decodeFile(imagePath);
-        }
-        return null;
-    }
-
     @OnClick(R.id.detail_camera)
     public void getImageFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
         startActivityForResult(intent, RESULT_LOAD_IMAGE);
     }
 
@@ -250,7 +236,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             String imageUriString = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_IMAGE_URI));
             if (imageUriString != null) {
                 productImageUri = Uri.parse(imageUriString);
-                imageView.setImageBitmap(getBitmapFromUri(productImageUri));
+                imageView.setImageURI(productImageUri);
             }
 
             productName = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_NAME));
