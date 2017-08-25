@@ -3,6 +3,7 @@ package com.xianwei.inventoryapp;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -48,30 +50,67 @@ public class EditActivity extends AppCompatActivity {
     EditText phoneEditView;
     @BindView(R.id.detail_order_bt)
     Button orderButton;
+    @BindView(R.id.detail_delete_bt)
+    ImageButton deleteButton;
 
     private static final int RESULT_LOAD_IMAGE = 1;
 
     private String productName;
     private Uri productImageUri;
-    private int productQuality;
-    private int productPrice;
+    private String productQuality;
+    private String productPrice;
     private String supplierPhone;
+    private String itemUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         ButterKnife.bind(this);
+
+        itemUri = getIntent().getStringExtra("URI");
+        if (itemUri != null) {
+            setupUI(Uri.parse(itemUri));
+        } else {
+            deleteButton.setVisibility(View.GONE);
+        }
+    }
+
+    private void setupUI(Uri itemUri) { String[] project = {ProductEntry.COLUMN_PRODUCT_IMAGE_URI,
+                                            ProductEntry.COLUMN_PRODUCT_NAME,
+                                            ProductEntry.COLUMN_PRODUCT_QUALITY,
+                                            ProductEntry.COLUMN_PRODUCT_PRICE,
+                                            ProductEntry.COLUMN_SUPPLIER_PHONE};
+
+        Cursor cursor = getContentResolver().query(itemUri, project, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            String imageUriString = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_IMAGE_URI));
+            if (imageUriString != null) {
+                productImageUri = Uri.parse(imageUriString);
+                imageView.setImageBitmap(getBitmapFromUri(productImageUri));
+            }
+
+            productName = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_NAME));
+            productQuality = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_QUALITY));
+            productPrice = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_PRICE));
+            supplierPhone = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_SUPPLIER_PHONE));
+
+            nameEditView.setText(productName);
+            qualityEditView.setText(productQuality);
+            priceEditView.setText(productPrice);
+            phoneEditView.setText(supplierPhone);
+      }
     }
 
     private void saveData() {
         productName = nameEditView.getText().toString().trim();
-        productQuality = Integer.parseInt(qualityEditView.getText().toString());
+        productQuality = qualityEditView.getText().toString();
         supplierPhone = phoneEditView.getText().toString();
         if (priceEditView.getText().toString().length() != 0 ){
-            productPrice = Integer.parseInt(priceEditView.getText().toString());
+            productPrice = priceEditView.getText().toString();
         } else {
-            productPrice = 0;
+            productPrice = "0";
         }
 
         ContentValues values = new ContentValues();

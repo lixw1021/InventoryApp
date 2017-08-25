@@ -48,25 +48,15 @@ public class MainActivity extends AppCompatActivity {
         ProductCursorAdapter adapter = new ProductCursorAdapter(this, cursor);
         listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, EditActivity.class);
-                Uri uri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, id);
-                intent.putExtra("URI",uri.toString());
-                startActivity(intent);
-            }
-        });
     }
 
-//    @OnItemClick(R.id.list_view)
-//    void openEdit(long id) {
-//        c
-//        Intent intent = new Intent(MainActivity.this, EditActivity.class);
-//        Uri uri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, id);
-//        intent.putExtra("URI",uri.toString());
-//        startActivity(intent);
-//    }
+    @OnItemClick(R.id.list_view)
+    void openEdit(long id) {
+        Intent intent = new Intent(MainActivity.this, EditActivity.class);
+        Uri uri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, id);
+        intent.putExtra("URI",uri.toString());
+        startActivity(intent);
+    }
 
     @OnClick(R.id.floating_add)
     public void addItem(View view) {
