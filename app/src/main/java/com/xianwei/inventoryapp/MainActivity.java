@@ -75,6 +75,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        cursorAdapter.swapCursor(null);
     }
 }

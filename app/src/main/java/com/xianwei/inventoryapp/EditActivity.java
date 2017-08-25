@@ -8,6 +8,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +31,7 @@ import butterknife.OnClick;
  * Created by xianwei li on 8/19/2017.
  */
 
-public class EditActivity extends AppCompatActivity {
+public class EditActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
     @BindView(R.id.detail_image_view)
     ImageView imageView;
     @BindView(R.id.detail_camera)
@@ -51,13 +54,14 @@ public class EditActivity extends AppCompatActivity {
     ImageButton deleteButton;
 
     private static final int RESULT_LOAD_IMAGE = 1;
+    private static final int EXITING_URL_LOADER = 1;
 
     private String productName;
     private Uri productImageUri;
     private String productQuality;
     private String productPrice;
     private String supplierPhone;
-    private String itemUriString;
+    private Uri itemUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,39 +69,13 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
         ButterKnife.bind(this);
 
-        itemUriString = getIntent().getStringExtra("URI");
+        String itemUriString = getIntent().getStringExtra("URI");
         if (itemUriString != null) {
-            setupUI(Uri.parse(itemUriString));
+            itemUri = Uri.parse(itemUriString);
+            getSupportLoaderManager().initLoader(EXITING_URL_LOADER, null, this);
         } else {
             deleteButton.setVisibility(View.GONE);
         }
-    }
-
-    private void setupUI(Uri itemUri) { String[] project = {ProductEntry.COLUMN_PRODUCT_IMAGE_URI,
-                                            ProductEntry.COLUMN_PRODUCT_NAME,
-                                            ProductEntry.COLUMN_PRODUCT_QUALITY,
-                                            ProductEntry.COLUMN_PRODUCT_PRICE,
-                                            ProductEntry.COLUMN_SUPPLIER_PHONE};
-
-        Cursor cursor = getContentResolver().query(itemUri, project, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            String imageUriString = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_IMAGE_URI));
-            if (imageUriString != null) {
-                productImageUri = Uri.parse(imageUriString);
-                imageView.setImageBitmap(getBitmapFromUri(productImageUri));
-            }
-
-            productName = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_NAME));
-            productQuality = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_QUALITY));
-            productPrice = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_PRICE));
-            supplierPhone = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_SUPPLIER_PHONE));
-
-            nameEditView.setText(productName);
-            qualityEditView.setText(productQuality);
-            priceEditView.setText(productPrice);
-            phoneEditView.setText(supplierPhone);
-      }
     }
 
     private void saveData() {
@@ -126,10 +104,10 @@ public class EditActivity extends AppCompatActivity {
         values.put(ProductEntry.COLUMN_PRODUCT_QUALITY, productQuality);
         values.put(ProductEntry.COLUMN_PRODUCT_PRICE, productPrice);
 
-        if (itemUriString == null) {
+        if (itemUri == null) {
             getContentResolver().insert(ProductEntry.CONTENT_URI, values);
         } else {
-            getContentResolver().update(Uri.parse(itemUriString),values, null, null);
+            getContentResolver().update(itemUri,values, null, null);
         }
         finish();
     }
@@ -186,6 +164,12 @@ public class EditActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @OnClick(R.id.detail_delete_bt)
+    public void delete() {
+        getContentResolver().delete(itemUri, null, null);
+        finish();
+    }
+
     private String parsePhone(String phoneString) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < phoneString.length(); i++) {
@@ -213,5 +197,47 @@ public class EditActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] project = {ProductEntry.COLUMN_PRODUCT_IMAGE_URI,
+                            ProductEntry.COLUMN_PRODUCT_NAME,
+                            ProductEntry.COLUMN_PRODUCT_QUALITY,
+                            ProductEntry.COLUMN_PRODUCT_PRICE,
+                            ProductEntry.COLUMN_SUPPLIER_PHONE};
+
+        return new CursorLoader(this, itemUri, project, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (cursor != null) {
+            cursor.moveToFirst();
+            String imageUriString = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_IMAGE_URI));
+            if (imageUriString != null) {
+                productImageUri = Uri.parse(imageUriString);
+                imageView.setImageBitmap(getBitmapFromUri(productImageUri));
+            }
+
+            productName = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_NAME));
+            productQuality = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_QUALITY));
+            productPrice = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_PRODUCT_PRICE));
+            supplierPhone = cursor.getString(cursor.getColumnIndexOrThrow(ProductEntry.COLUMN_SUPPLIER_PHONE));
+
+            nameEditView.setText(productName);
+            qualityEditView.setText(productQuality);
+            priceEditView.setText(productPrice);
+            phoneEditView.setText(supplierPhone);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        imageView.setImageBitmap(null);
+        nameEditView.setText("");
+        qualityEditView.setText("0");
+        priceEditView.setText("");
+        phoneEditView.setText("");
     }
 }
