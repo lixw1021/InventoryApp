@@ -3,15 +3,12 @@ package com.xianwei.inventoryapp;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,7 +57,7 @@ public class EditActivity extends AppCompatActivity {
     private String productQuality;
     private String productPrice;
     private String supplierPhone;
-    private String itemUri;
+    private String itemUriString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +65,9 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
         ButterKnife.bind(this);
 
-        itemUri = getIntent().getStringExtra("URI");
-        if (itemUri != null) {
-            setupUI(Uri.parse(itemUri));
+        itemUriString = getIntent().getStringExtra("URI");
+        if (itemUriString != null) {
+            setupUI(Uri.parse(itemUriString));
         } else {
             deleteButton.setVisibility(View.GONE);
         }
@@ -129,7 +126,11 @@ public class EditActivity extends AppCompatActivity {
         values.put(ProductEntry.COLUMN_PRODUCT_QUALITY, productQuality);
         values.put(ProductEntry.COLUMN_PRODUCT_PRICE, productPrice);
 
-        getContentResolver().insert(ProductEntry.CONTENT_URI, values);
+        if (itemUriString == null) {
+            getContentResolver().insert(ProductEntry.CONTENT_URI, values);
+        } else {
+            getContentResolver().update(Uri.parse(itemUriString),values, null, null);
+        }
         finish();
     }
 

@@ -1,29 +1,26 @@
 package com.xianwei.inventoryapp;
 
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.xianwei.inventoryapp.data.ProductContract.ProductEntry;
-import com.xianwei.inventoryapp.data.ProductDbHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     @BindView(R.id.list_view)
     ListView listView;
     @BindView(R.id.empty_list_view)
@@ -31,23 +28,20 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.floating_add)
     FloatingActionButton fab;
 
+    private static final int URL_LOADER = 1;
+    ProductCursorAdapter cursorAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        getSupportLoaderManager().initLoader(URL_LOADER, null, this);
 
         listView.setEmptyView(emptyView);
-        String[] projection = new String[] {ProductEntry._ID,
-                                            ProductEntry.COLUMN_PRODUCT_NAME,
-                                            ProductEntry.COLUMN_PRODUCT_PRICE,
-                                            ProductEntry.COLUMN_PRODUCT_QUALITY};
-
-        Cursor cursor = getContentResolver().query(ProductEntry.CONTENT_URI, projection, null, null, null);
-        ProductCursorAdapter adapter = new ProductCursorAdapter(this, cursor);
-        listView.setAdapter(adapter);
-
+        cursorAdapter = new ProductCursorAdapter(this, null);
+        listView.setAdapter(cursorAdapter);
     }
 
     @OnItemClick(R.id.list_view)
@@ -62,5 +56,25 @@ public class MainActivity extends AppCompatActivity {
     public void addItem(View view) {
         Intent intent = new Intent(MainActivity.this, EditActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projection = new String[] {ProductEntry._ID,
+                ProductEntry.COLUMN_PRODUCT_NAME,
+                ProductEntry.COLUMN_PRODUCT_PRICE,
+                ProductEntry.COLUMN_PRODUCT_QUALITY};
+
+        return new CursorLoader(this, ProductEntry.CONTENT_URI, projection, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor newCursor) {
+        cursorAdapter.swapCursor(newCursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
