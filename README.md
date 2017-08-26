@@ -1,6 +1,6 @@
 # Inventory App
 ```
-Key Words: SQLite database, Content provider, CursorLoader, ListView
+Key Words: SQLite database, Content provider, CursorLoader, ListView, Butterknife
 ```
 * Developed an Inventory app to manage stock and suplier contact.
 * Designed a Sqlite Database with content provider to store product information.
