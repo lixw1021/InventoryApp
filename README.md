@@ -2,9 +2,9 @@
 ```
 Key Words: SQLite database, Content provider, CursorLoader, ListView, Butterknife
 ```
-* Developed an Inventory app to manage stock and suplier contact.
-* Designed a Sqlite Database with content provider to store product information.
-* Integrated android's file storeage system into database.
+* Developed an Inventory app to manage stock and supplier contact.
+* Designed a SQLite Database with content provider to store product information.
+* Integrated android's file storage system into database.
 * Applied CursorLoader to query data from database and presented information from files and SQLite databases to users
 
 
